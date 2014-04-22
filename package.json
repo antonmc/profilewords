@@ -1,0 +1,15 @@
+{
+	"name": "NodejsStarterApp",
+	"version": "0.0.1",
+	"description": "A sample nodejs app for BlueMix",
+	"dependencies": {
+		"mongodb":"*",
+		"express": "*",
+		"oauth": "*",
+		 "twit": "~1.1.11"
+	},
+	"engines": {
+		"node": ">=0.10.0"
+	},
+	"repository": {}
+}
