@@ -223,7 +223,7 @@ var WORDLEJS = WORDLEJS || {};
                     url: urlPrefix + wordObject.text,
                     //strokeColor: Random.getRandomColor(), //no use
                     fillColor: Random.getRandomColorFromPalette(),// Random.getRandomColor(0x44, 0xff),
-                    fontFamily: 'sans-serif', // Random.getRandomBoolean() ? 'sans-serif' : 'serif',
+                    fontFamily: 'Varela', // Random.getRandomBoolean() ? 'sans-serif' : 'serif',
                     rotated: Random.getRandomBoolean() // half chances of rotation
                 };
 

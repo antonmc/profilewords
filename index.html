@@ -11,46 +11,38 @@
   <meta name="description" content="">
   <meta name="author" content="Anton McConville">
   <link rel="stylesheet" href="normalize.css">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="profilewords.css">
+    <link href='http://fonts.googleapis.com/css?family=Varela' rel='stylesheet' type='text/css'>
+  
 </head>
 
 <body>
   <header class="page-header">
-    <!-- div id="debug" class='debug-content'>
-      <span id="line1"></span><br/>
-      <span id="line2"></span><br/>
-      <span id="line3"></span>
-    </div -->
   </header>
+    <div class="leadArea">
     <form class="twitterIdEntry" action="javascript:renderWordle()" method="get">
-        Twitter ID: <input type="text" id="twitterIDfield" name="user_email" />
-        <input type="submit" value="Submit" />
+        Bios for Twitter ID: <input class="idForm" type="text" id="twitterIDfield" name="user_email" />
+        <input class="submitButton" type="submit" value="Submit" />
     </form>
+        <span id="handle" class="name"></span>
+    </div>
   <div id='wordle-container' class='container'></div>
   <div class="center" style='display: none'></div>
 
-  <footer>
-    Ported from <a href="http://blog.int3ractive.com/2011/02/as3-wordle-tag-cloud.html" target="_blank">WordleAS3</a>.
+  <footer style="font-family:sans-serif;">
+    TagCloud software ported from WordleAS3, otherwise (c) Anton McConville @antonmc 2014.
   </footer>
-
-
-  <!-- JavaScript at the bottom for fast page loading -->
-  <!-- some external library -->
-
-  <!-- scripts concatenated and minified via build script -->
-  <!-- script src="dat.gui.min.js"></script -->
-
   <script src="utils.js" ></script>
   <script src="wordle.js"></script>
   <script src="script.js"></script>
-  <!-- end scripts -->
-
-  <!-- Prompt IE 6,7,8 users. -->
-  <!--[if lt IE 9 ]>
-    <p class="unsupport">Your browser is not supported. This demo requires Canvas and CSS3's transform</p>
-  <![endif]-->
-
-
-
+  <script>
+	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+	
+	  ga('create', 'UA-50243623-1', 'bluemix.net');
+	  ga('send', 'pageview');
+  </script>
 </body>
 </html>

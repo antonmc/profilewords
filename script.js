@@ -5,7 +5,7 @@
 
     var wordsLimit = 20;
     
-    var surplus = 'manager, toman, with, own, no, t, at, on, our, not, from, the, it is, we all, a, an, by, to, you, me, he, she, they, we, how, it, i, are, to, for, of, and, in, as, am, their, also, that, my, co, http, com, is, so, de, m, 1, 2, 3, 4, 5, 6, 7, 8, 9, el, es, or, s, la, mi, y, o, les, di, b, des, u, n, e, que, en, ser, soy, 10, 11, 12, 13, 14';
+    var surplus = 'manager, toman, with, own, no, t, at, on, our, not, from, the, it is, we all, a, an, by, to, you, me, he, she, they, we, how, it, i, are, to, for, of, and, in, as, am, their, also, that, my, co, http, com, is, so, de, m, 1, 2, 3, 4, 5, 6, 7, 8, 9, el, es, or, s, la, mi, y, o, les, di, b, des, u, n, e, que, en, ser, soy, 10, 11, 12, 13, 14, all, follow, g, d, 2014, las, il des, don, del';
     
     var cleanResponse = function( text, common ) {
         var wordArr = text.match(/\w+/g),
@@ -32,6 +32,15 @@
         return newString;
     }
     
+    var getParameter = function() {
+        var vars = {};
+        var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi,    
+        function(m,key,value) {
+          vars[key] = value;
+        });
+        return vars;
+    }
+    
     var renderWordle = function () {
         
         var idField = document.getElementById( 'twitterIDfield' );
@@ -42,7 +51,18 @@
         
             var path = '/words/' + idField.value ;
             
+            var oauth_token = getParameter()['oauth_token'];
+            
+            var parameters;
+            
+            if( oauth_token ){                
+                console.log( 'read oauth token: ' + oauth_token );
+                parameters = 'oauth_token=' + oauth_token;
+                
+            }
+            
             var xhr = new XMLHttpRequest();
+               
                 xhr.open("GET", path, true);
                 xhr.onload = function (e) {
                   if (xhr.readyState === 4) {
@@ -66,10 +86,13 @@
                     }
                   }
                 };
+            
+                xhr.setRequestHeader( "oauth_token", oauth_token );
+            
                 xhr.onerror = function (e) {
                   console.error(xhr.statusText);
                 };
-                xhr.send(null);
+                xhr.send( parameters );
         }
     };
 

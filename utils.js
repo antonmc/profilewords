@@ -117,7 +117,9 @@ var Random = {
         
         var Winter_Snowfall = [ '273F5A', 'C6DBF3', '4B81A5', '74A0BF', '98C4DA' ];
         
-        return Primavera[ Math.floor((Math.random()*5)) ];
+        var Earth = [ 'cbc4ba', 'd4806d', 'c2be98', 'e3cb92', '695d4f' ];
+        
+        return Earth[ Math.floor((Math.random()*5)) ];
         
     },
     

@@ -61,7 +61,8 @@ audio:not([controls]) {
  */
 
 html {
-    font-family: sans-serif; /* 1 */
+    /* font-family: sans-serif; 1 */
+    font-family: 'Patrick Hand SC', 'cursive;
     -webkit-text-size-adjust: 100%; /* 2 */
     -ms-text-size-adjust: 100%; /* 2 */
 }

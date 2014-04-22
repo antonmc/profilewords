@@ -5,44 +5,67 @@ var mongo;
 
 var OAuth= require('oauth').OAuth;
 
-var oa = new OAuth(
-	"https://api.twitter.com/oauth/request_token",
-	"https://api.twitter.com/oauth/access_token",
-	"LCbB9rX8gmHmOwfQT0GKMXERc",
-	"O1Bva58C18GcJ4i0kHJbKbJxO6aV6wJX4aedb1GW4YCU8QHAdR",
-	"1.0",
-	"http://followers.ng.bluemix.net",
-	"HMAC-SHA1"
-);
+var callBackPage = "http://127.0.0.1:3000/sessions/callback";
 
 if (process.env.VCAP_SERVICES) {
-  var env = JSON.parse(process.env.VCAP_SERVICES);
-  mongo = env['mongodb-2.2'][0]['credentials'];
+    var env = JSON.parse(process.env.VCAP_SERVICES);
+    mongo = env['mongodb-2.2'][0]['credentials'];
+    callBackPage = "http://followers.ng.bluemix.net/sessions/callback";               
 } else {
-  mongo = { "hostname":"192.168.19.1",
-   			"port":27017,
-   			"username":"",
-    		"password":"",
-    		"name":"",
-    		"db":"db",
-    		"url":"mongodb://192.168.19.1:27017/db" };
+    mongo = {   "hostname":"127.0.0.1",
+                "port":27017,
+   	            "username":"",
+                "password":"",
+                "name":"",
+                "db":"db",
+                "url":"mongodb://127.0.0.1:27017/db" };
 }
 
+var path = mongo.url;
 
 var port = (process.env.VCAP_APP_PORT || 3000);
 var host = (process.env.VCAP_APP_HOST || 'localhost');
+
 var http = require('http');
 var twit = require("twit");
-var express = require("express");
-var app = express();
+
+var express = require('express');
+var util = require('util');
+var oauth = require('oauth');
+var http = require('http');
+var cookieParser = require('cookie-parser');
+var session = require('express-session');
+var errorHandler = require('errorhandler');
+var logger = require('morgan');
+
 var csv = [];
 
-var config = {
-    consumer_key:         'LCbB9rX8gmHmOwfQT0GKMXERc',
-    consumer_secret:      'O1Bva58C18GcJ4i0kHJbKbJxO6aV6wJX4aedb1GW4YCU8QHAdR',
-    access_token:         '15673818-M8Su6qPGBVUU3oFRGxTTn18GKtQFVmaz0HP44dlD0',
-    access_token_secret:  'hLkRvhmUENi03lFGVSTTA39q4OqG97i1U29oFGcBHqlSd'
-}
+var app = express();
+var server = http.createServer(app);
+
+// Get your credentials here: https://dev.twitter.com/apps
+var _twitterConsumerKey = "LCbB9rX8gmHmOwfQT0GKMXERc";
+var _twitterConsumerSecret = "O1Bva58C18GcJ4i0kHJbKbJxO6aV6wJX4aedb1GW4YCU8QHAdR";
+
+var consumer = new oauth.OAuth(
+    "https://twitter.com/oauth/request_token", "https://twitter.com/oauth/access_token",
+    _twitterConsumerKey, _twitterConsumerSecret, "1.0A", callBackPage, "HMAC-SHA1");
+
+    app.use(errorHandler({ dumpExceptions: true, showStack: true }));
+    app.use(logger());
+    app.use(cookieParser());
+    app.use(session({ secret: "very secret" })
+);
+
+app.use(function(req, res, next){
+    var err = req.session.error, msg = req.session.success;
+    delete req.session.error;
+    delete req.session.success;
+    res.locals.message = '';
+    if (err) res.locals.message = '<p class="msg error">' + err + '</p>';
+    if (msg) res.locals.message = '<p class="msg success">' + msg + '</p>';
+    next();
+});
 
 var makeCommaList = function( followerArray ){
 
@@ -61,7 +84,7 @@ var retrieveProfiles = function( config, res, id ) {
 
     /* To begin with this function will retrieve the first 5000
        followers as defined by Twitter's API */
-
+    
     this.twit = new twit(config);
 
   	var twitterObject = this.twit;
@@ -72,7 +95,7 @@ var retrieveProfiles = function( config, res, id ) {
     console.log( 'id: ' + id );
 
   	this.twit.get('followers/ids', { screen_name: id },  function( err, reply ){
-
+        
         followerSets = [];
 
   		var count = 0;
@@ -113,28 +136,54 @@ var retrieveProfiles = function( config, res, id ) {
                         userReply.forEach( function( profile ){
                             descriptions = descriptions + ' ' + profile.description;
                         });
-
+                        
                         res.end( JSON.stringify({ profiles: descriptions }));                        
                     }
                 })
             })
         }
+        
+        if( err ){
+            console.log( 'retrieval error' );
+            console.log( err );
+        }
     })
 }
 
- /* serves main page */
- app.get("/", function(req, res) {
-    res.sendfile('index.html');
- });
-
-app.param('id', function(req,res, next, id){    
+app.param('id', function(req, res, next, id){    
+        
     res.setHeader('Content-Type', 'application/json');
-    retrieveProfiles( config, res, id );
+        
+    if( req.headers['oauth_token'] ){
+        
+        var token = req.headers['oauth_token'];
+                
+        require('mongodb').connect(mongo.url, function(err, database) {
+
+            var collection = database.collection( 'tokens' );
+
+            collection.findOne( { 'oauth_access_token': token }, function( err, item ) {                 
+                        
+                var config = {
+                    consumer_key:         'LCbB9rX8gmHmOwfQT0GKMXERc',
+                    consumer_secret:      'O1Bva58C18GcJ4i0kHJbKbJxO6aV6wJX4aedb1GW4YCU8QHAdR',
+                    access_token_secret: item.oauth_access_token_secret,
+                    access_token: item.oauth_access_token
+                }
+                
+                console.log( 'account: ' + item.name );
+        
+                retrieveProfiles( config, res, id );                
+
+            });
+        });
+    }
+    
     next();
 });
 
  app.get( "/words/:id", function(req, res ){
-
+    
  } )
 
   app.post("/user/add", function(req, res) {
@@ -142,57 +191,93 @@ app.param('id', function(req,res, next, id){
 	res.send("OK");
   });
 
-
-app.get('/auth/twitter', function(req, res){
-	oa.getOAuthRequestToken(function(error, oauth_token, oauth_token_secret, results){
-		if (error) {
-			console.log(error);
-			res.send("yeah no. didn't work.")
-		}
-		else {
-            req.session = new Object();
-            
-			req.session.oauth = {};
-			req.session.oauth.token = oauth_token;
-			console.log('oauth.token: ' + req.session.oauth.token);
-			req.session.oauth.token_secret = oauth_token_secret;
-			console.log('oauth.token_secret: ' + req.session.oauth.token_secret);
-			res.redirect('https://twitter.com/oauth/authenticate?oauth_token='+oauth_token)
-	}
-	});
+app.get('/sessions/connect', function(req, res){
+  consumer.getOAuthRequestToken(function(error, oauthToken, oauthTokenSecret, results){
+    if (error) {
+      res.send("Error getting OAuth request token : " + util.inspect(error), 500);
+    } else {
+      req.session.oauthRequestToken = oauthToken;
+      req.session.oauthRequestTokenSecret = oauthTokenSecret;
+      res.redirect("https://twitter.com/oauth/authorize?oauth_token="+req.session.oauthRequestToken);
+      console.log( 'get sessions connect' );
+    }
+  });
 });
 
+app.get('/sessions/callback', function(req, res){
+  util.puts(">>"+req.session.oauthRequestToken);
+  util.puts(">>"+req.session.oauthRequestTokenSecret);
+  util.puts(">>"+req.query.oauth_verifier);
+  consumer.getOAuthAccessToken(req.session.oauthRequestToken, req.session.oauthRequestTokenSecret, req.query.oauth_verifier, function(error, oauthAccessToken, oauthAccessTokenSecret, results) {
+    if (error) {
+      res.send("Error getting OAuth access token : " + util.inspect(error) + "["+oauthAccessToken+"]"+ "["+oauthAccessTokenSecret+"]"+ "["+util.inspect(results)+"]", 500);
+    } else {
+      req.session.oauthAccessToken = oauthAccessToken;
+      req.session.oauthAccessTokenSecret = oauthAccessTokenSecret;    
 
-app.get('/auth/twitter/callback', function(req, res, next){
-	if (req.session.oauth) {
-		req.session.oauth.verifier = req.query.oauth_verifier;
-		var oauth = req.session.oauth;
+      console.log( 'get sessions callback' );
 
-		oa.getOAuthAccessToken(oauth.token,oauth.token_secret,oauth.verifier, 
-		function(error, oauth_access_token, oauth_access_token_secret, results){
-			if (error){
-				console.log(error);
-				res.send("yeah something broke.");
-			} else {
-				req.session.oauth.access_token = oauth_access_token;
-				req.session.oauth,access_token_secret = oauth_access_token_secret;
-				console.log(results);
-				res.send("worked. nice one.");
-			}
-		}
-		);
-	} else
-		next(new Error("you're not supposed to be here."))
+      res.redirect( '/?oauth_token=' + oauthAccessToken );
+    }
+  });
 });
+
+app.get('/', function(req, res){
+    consumer.get("https://api.twitter.com/1.1/account/verify_credentials.json", req.session.oauthAccessToken, req.session.oauthAccessTokenSecret, function (error, data, response) {
+      if (error) {
+
+          console.log( 'error\n' );
+          console.log( error );
+
+          res.redirect('/sessions/connect');
+          // res.send("Error getting twitter screen name : " + util.inspect(error), 500);
+      } else {
+          var parsedData = JSON.parse(data);
+          
+          require( 'mongodb' ).connect( path, function( err, database ) {
+
+                    var person = ({ 'name':parsedData.screen_name, 'oauth_access_token': req.session.oauthAccessToken, 'oauth_access_token_secret': req.session.oauthAccessTokenSecret });
+
+                    var collection = database.collection( 'tokens' );
+                    collection.insert( person, {safe:true}, errorHandler );
+              
+              
+                     collection.find( {}, {limit:10, sort:[['_id', 'desc']]}, function(err, cursor) {
+
+                      cursor.toArray(function(err, items) {
+
+                        console.log( 'There are ' + items.length + ' records in the database ... \n\n' );
+
+                        var count = 1;
+
+                        items.forEach( function(item){
+                            console.log( '[ Record: ' + item.oauth_access_token + '\n');
+                            count++;
+                        });
+                      });
+                    });
+
+                });
+
+          res.sendfile('index.html');
+      }
+    });
+});
+
+var errorHandler = function(err){
+	if (err){ console.log(err); }
+};
 
 var __dirname = '.';
 
  /* serves all the static files */
 app.get(/^(.+)$/, function(req, res){
-     console.log('static file request : ' + req.params);
+//     console.log('static file request : ' + req.params);
      res.sendfile( __dirname + req.params[0]);
 });
 
  app.listen(port, function() {
    console.log("Listening on " + port);
  });
+
+app.use(session({ secret: 'keyboard cat', key: 'sid', cookie: { secure: true }}));
