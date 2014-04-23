@@ -1,6 +1,6 @@
 applications:
 - services:
-  - mongodb-uo
+  - mongodb-followers
   host: followers
   disk: 1024M
   name: followers
