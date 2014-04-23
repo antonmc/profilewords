@@ -1,41 +1,13 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-
-  <!-- Use the .htaccess and remove these lines to avoid edge case issues.
-       More info: h5bp.com/b/378 -->
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-
-  <title>Followers Profile Cloud</title>
-  <meta name="description" content="">
-  <meta name="author" content="Anton McConville">
-  <link rel="stylesheet" href="normalize.css">
-  <link rel="stylesheet" href="profilewords.css">
-    <link href='http://fonts.googleapis.com/css?family=Varela' rel='stylesheet' type='text/css'>
-  
-</head>
-
-<body>
-  <header class="page-header">
-  </header>
-    <div class="leadArea">
-    <form class="twitterIdEntry" action="javascript:renderWordle()" method="get">
-        Bios for Twitter ID: <input class="idForm" type="text" id="twitterIDfield" name="user_email" />
-        <input class="submitButton" type="submit" value="Submit" />
-    </form>
-        <span id="handle" class="name"></span>
-    </div>
-  <div id='wordle-container' class='container'></div>
-  <div class="center" style='display: none'></div>
-
-  <footer style="font-family:sans-serif;">
-    TagCloud software ported from WordleAS3, otherwise (c) Anton McConville @antonmc 2014.
-  </footer>
-  <script src="utils.js" ></script>
-  <script src="wordle.js"></script>
-  <script src="script.js"></script>
-  <script>
+<html><head>
+	<link rel="stylesheet" href="http://hickory.ca/font/font.css">
+	<link rel="stylesheet" href="foundation.css">
+	<link rel="stylesheet" type="text/css" href="hickory.css">
+	<link rel="stylesheet" type="text/css" href="gridism.css">
+	<link href="http://fonts.googleapis.com/css?family=Patrick+Hand" rel="stylesheet" type="text/css">
+	<link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet" type="text/css">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<title>Followers Profile Words</title>
+	<script>
 	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
 	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -44,5 +16,42 @@
 	  ga('create', 'UA-50243623-1', 'bluemix.net');
 	  ga('send', 'pageview');
   </script>
-</body>
-</html>
+	<style>
+		.amnesty-screen{
+			height: calc( 586px * .7 );
+		}
+	</style>
+</head>
+<body class="body">
+<div class="infoArea">
+		    <div id="logo" class="box-wrap-inner">      
+		        <div class="logo"><img src="profilewords.png" alt="Profile Words" height="42" width="250"></div>
+		    </div>
+			<div class="box-wrap-inner title">word cloud biographies</div>
+			<div class="box-wrap-inner subtitle">an experimental tool</div>
+		    <div class="box-wrap-inner" id="topNav">
+                 <a href="/sessions/connect" id="twitterAuth">
+				    <img style="padding-top:50px;" src="https://dev.twitter.com/sites/default/files/images_documentation/sign-in-with-twitter-gray.png" alt="Sign in with Twitter" title="Sign in with Twitter">
+                </a>		
+			</div>
+            <div class="box-wrap-inner" id="topNav">
+                <img style="padding-top:30px;" src="timoreilly.png">
+			</div>
+		</div>
+	<div id="canvas">
+		
+		<div id="projectThumbs" style="height:1100px;">
+		  <div class="wrapper" id="wrapper">
+		  <div class="grid">
+		 
+		     <div>
+		       <pre></pre>
+		      </div>
+		     
+    		</div>
+		  </div>
+		 
+		</div>
+		</div>
+	</div>
+</body></html>

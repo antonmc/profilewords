@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- Use the .htaccess and remove these lines to avoid edge case issues.
+       More info: h5bp.com/b/378 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title>Followers Profile Cloud</title>
+  <meta name="description" content="twitter profiles wordcloud analytics">
+  <meta name="author" content="Anton McConville">
+  <link rel="stylesheet" href="normalize.css">
+  <link rel="stylesheet" href="profilewords.css">
+    <link href='http://fonts.googleapis.com/css?family=Varela' rel='stylesheet' type='text/css'>
+  
+</head>
+
+<body>
+  <header class="page-header">
+  </header>
+    <div class="leadArea">
+    <form class="twitterIdEntry" action="javascript:renderWordle()" method="get">
+        Bios for Twitter ID: <input class="idForm" type="text" id="twitterIDfield" name="user_email" />
+        <input class="submitButton" type="submit" value="Submit" />
+    </form>
+        <span id="handle" class="name"></span>
+    </div>
+  <div id='wordle-container' class='container'></div>
+  <div class="center" style='display: none'></div>
+
+  <footer style="font-family:sans-serif;">
+    TagCloud software ported from WordleAS3, otherwise (c) Anton McConville @antonmc 2014.
+  </footer>
+  <script src="utils.js" ></script>
+  <script src="wordle.js"></script>
+  <script src="script.js"></script>
+  <script>
+	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+	
+	  ga('create', 'UA-50243623-1', 'bluemix.net');
+	  ga('send', 'pageview');
+  </script>
+</body>
+</html>

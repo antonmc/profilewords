@@ -5,12 +5,12 @@ var mongo;
 
 var OAuth= require('oauth').OAuth;
 
-var callBackPage = "http://127.0.0.1:3000/sessions/callback";
+var _callBackPage = "http://127.0.0.1:3000/sessions/callback";
 
 if (process.env.VCAP_SERVICES) {
     var env = JSON.parse(process.env.VCAP_SERVICES);
     mongo = env['mongodb-2.2'][0]['credentials'];
-    callBackPage = "http://followers.ng.bluemix.net/sessions/callback";               
+    _callBackPage = "http://followers.ng.bluemix.net/sessions/callback";               
 } else {
     mongo = {   "hostname":"127.0.0.1",
                 "port":27017,
@@ -49,7 +49,7 @@ var _twitterConsumerSecret = "O1Bva58C18GcJ4i0kHJbKbJxO6aV6wJX4aedb1GW4YCU8QHAdR
 
 var consumer = new oauth.OAuth(
     "https://twitter.com/oauth/request_token", "https://twitter.com/oauth/access_token",
-    _twitterConsumerKey, _twitterConsumerSecret, "1.0A", callBackPage, "HMAC-SHA1");
+    _twitterConsumerKey, _twitterConsumerSecret, "1.0A", _callBackPage, "HMAC-SHA1");
 
     app.use(errorHandler({ dumpExceptions: true, showStack: true }));
     app.use(logger());
@@ -217,12 +217,16 @@ app.get('/sessions/callback', function(req, res){
 
       console.log( 'get sessions callback' );
 
-      res.redirect( '/?oauth_token=' + oauthAccessToken );
+      res.redirect( '/profilewords.html?oauth_token=' + oauthAccessToken );
     }
   });
 });
 
 app.get('/', function(req, res){
+	res.sendfile( 'index.html' );
+});
+
+app.get('/profilewords.html', function(req, res){
     consumer.get("https://api.twitter.com/1.1/account/verify_credentials.json", req.session.oauthAccessToken, req.session.oauthAccessTokenSecret, function (error, data, response) {
       if (error) {
 
@@ -259,7 +263,7 @@ app.get('/', function(req, res){
 
                 });
 
-          res.sendfile('index.html');
+          res.sendfile('profilewords.html');
       }
     });
 });
