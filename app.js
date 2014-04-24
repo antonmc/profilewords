@@ -173,7 +173,17 @@ app.param('id', function(req, res, next, id){
                 
                 console.log( 'account: ' + item.name );
         
-                retrieveProfiles( config, res, id );                
+                retrieveProfiles( config, res, id );   
+                
+                var requests = database.collection( 'requests' );
+                
+                var date = new Date();
+                
+                var request = ( { 'twitterId':id, 'timeStamp': date, 'account': item.name } );
+                
+                console.log( request );
+                
+                requests.insert( request, {safe:true}, errorHandler );
 
             });
         });
