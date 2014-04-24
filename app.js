@@ -240,11 +240,13 @@ app.get('/profilewords.html', function(req, res){
           
           require( 'mongodb' ).connect( path, function( err, database ) {
 
-                    var person = ({ 'name':parsedData.screen_name, 'oauth_access_token': req.session.oauthAccessToken, 'oauth_access_token_secret': req.session.oauthAccessTokenSecret });
+                    var person = ( { 'name':parsedData.screen_name, 'oauth_access_token': req.session.oauthAccessToken, 'oauth_access_token_secret': req.session.oauthAccessTokenSecret } );
 
                     var collection = database.collection( 'tokens' );
-                    collection.insert( person, {safe:true}, errorHandler );
               
+                    collection.remove( { 'name':parsedData.screen_name }, errorHandler );
+              
+                    collection.insert( person, {safe:true}, errorHandler );
               
                      collection.find( {}, {limit:10, sort:[['_id', 'desc']]}, function(err, cursor) {
 
