@@ -5,8 +5,8 @@
 
     var wordsLimit = 20;
     
-    var surplus = 'manager, toman, with, own, no, t, at, on, our, not, from, the, it is, we all, a, an, by, to, you, me, he, she, they, we, how, it, i, are, to, for, of, and, in, as, am, their, also, that, my, co, http, com, is, so, de, m, 1, 2, 3, 4, 5, 6, 7, 8, 9, el, es, or, s, la, mi, y, o, les, di, b, des, u, n, e, que, en, ser, soy, 10, 11, 12, 13, 14, all, follow, g, d, 2014, las, il des, don, del';
-    
+    var surplus = 'with, own, no, at, on, our, not, from, the, it is, we all, an, by, to, you, me, he, she, they, we, how, it, are, to, for, of, and, in, as, am, their, also, that, my, co, http, com, is, so, de, por, un, una, el, es, or, la, mi, les, di, des, que, en, ser, soy, all, follow, las, lo, il, des, don, del, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o ,p, q, r, s, t, u, v, w, x, y, z';
+ 
     var cleanResponse = function( text, common ) {
         var wordArr = text.match(/\w+/g),
             commonObj = {},
@@ -22,12 +22,12 @@
 
         for ( i = 0; i < wordArr.length; i++ ) {
             word = wordArr[i].trim().toLowerCase();
-            if ( !commonObj[word] ) {
-//                uncommonArr.push(word);
-                
+            if ( !commonObj[word] ) {                
                 newString = newString + ' ' + word;
             }
         }
+        
+        newString = newString.replace( /[0-9]/g, '' );
 
         return newString;
     }
@@ -74,10 +74,12 @@
                         var response = cleanResponse( res.profiles, surplus );
 
                         var sortResult = TextUtil.countWordOccurance( response );
+                        
+                        console.log( sortResult );
 
                         wordle.reset();
                         wordle.setWords(sortResult, 60);
-                        log('wordle sortType: ' + wordle.sortType);
+                        console.log('wordle sortType: ' + wordle.sortType);
 
                         wordle.doLayout();      
 

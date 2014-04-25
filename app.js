@@ -38,6 +38,7 @@ var session = require('express-session');
 var errorHandler = require('errorhandler');
 var logger = require('morgan');
 
+
 var csv = [];
 
 var app = express();
@@ -90,41 +91,62 @@ var retrieveProfiles = function( config, res, id ) {
   	var twitterObject = this.twit;
 
     var followerSets = [];
+    
     var set = [];
 
     console.log( 'id: ' + id );
 
   	this.twit.get('followers/ids', { screen_name: id },  function( err, reply ){
+    
+        var MAX_SAMPLE_SIZE = 1000;
         
         followerSets = [];
 
   		var count = 0;
+        
+        var totalCount = 0;
 
   		var idList = "";
 
+        var sampleSize;
+        
         if( reply ){
 
             set = [];
+            
+            if( reply.ids.length > MAX_SAMPLE_SIZE ){
+                sampleSize = MAX_SAMPLE_SIZE;
+            }else{
+                sampleSize = reply.ids.length;
+            }
 
             reply.ids.forEach( function( id ){
+                
+                if( totalCount < sampleSize ){
 
-                if( count < 100 ){
-                    set.push( id );
-                }else{
-                    count = 0;
-                    followerSets.push( set );
-                    set = [];
-                    set.push( id );
+                    if( count < 100 ){
+                        set.push( id );
+                    }else{
+                        count = 0;
+                        followerSets.push( set );
+                        set = [];
+                        set.push( id );
+                    }
+
+                    count++;
+                    totalCount++;
                 }
-
-                count++;
             })
 
             followerSets.push( set );
 
-            count = 0;
-
             var descriptions = '';
+            
+            var expectedReplies = ( followerSets.length - 1 ) * 100 + count;
+            
+            console.log( 'expectedReplies: ' + expectedReplies );
+            
+            count = 0;
 
             followerSets.forEach( function( set ){
 
@@ -135,12 +157,22 @@ var retrieveProfiles = function( config, res, id ) {
                     if( userReply ){
                         userReply.forEach( function( profile ){
                             descriptions = descriptions + ' ' + profile.description;
+                            count++;
+                            
+                            if( count === expectedReplies ){
+//                                res.end( JSON.stringify({ profiles: descriptions }));  
+                            }
+                            
                         });
                         
-                        res.end( JSON.stringify({ profiles: descriptions }));                        
+//                        console.log( 'Number of profiles: ' + count );     
+                        
+                        res.end( JSON.stringify({ profiles: descriptions }));  
                     }
                 })
             })
+            
+            console.log( descriptions );
         }
         
         if( err ){
