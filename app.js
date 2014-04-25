@@ -98,7 +98,7 @@ var retrieveProfiles = function( config, res, id ) {
 
   	this.twit.get('followers/ids', { screen_name: id },  function( err, reply ){
     
-        var MAX_SAMPLE_SIZE = 1000;
+        var MAX_SAMPLE_SIZE = 3000;
         
         followerSets = [];
 
