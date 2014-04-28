@@ -28,6 +28,8 @@ module.exports = {
                 result.push({ text: item, count:wordsObject[item] });
             }
         }
+        
+        /* test */
 
         //bigger count stay at top
         result.sort(function (wordA, wordB) {
