@@ -38,6 +38,8 @@ var session = require('express-session');
 var errorHandler = require('errorhandler');
 var logger = require('morgan');
 
+var logic = require( './logic' );
+
 
 var csv = [];
 
@@ -98,7 +100,7 @@ var retrieveProfiles = function( config, res, id ) {
 
   	this.twit.get('followers/ids', { screen_name: id },  function( err, reply ){
     
-        var MAX_SAMPLE_SIZE = 3000;
+        var MAX_SAMPLE_SIZE = 1000;
         
         followerSets = [];
 
@@ -160,19 +162,15 @@ var retrieveProfiles = function( config, res, id ) {
                             count++;
                             
                             if( count === expectedReplies ){
-//                                res.end( JSON.stringify({ profiles: descriptions }));  
+                                
+                                var words = logic.process( descriptions );                                
+                                res.end( JSON.stringify({ profiles: words }));  
                             }
                             
-                        });
-                        
-//                        console.log( 'Number of profiles: ' + count );     
-                        
-                        res.end( JSON.stringify({ profiles: descriptions }));  
+                        });  
                     }
                 })
             })
-            
-            console.log( descriptions );
         }
         
         if( err ){

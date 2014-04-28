@@ -71,14 +71,12 @@
 
                         var res = JSON.parse( xhr.responseText );
 
-                        var response = cleanResponse( res.profiles, surplus );
-
-                        var sortResult = TextUtil.countWordOccurance( response );
+//                        var response = cleanResponse( res.profiles, surplus );
+//
+//                        var sortResult = TextUtil.countWordOccurance( response );
                         
-                        console.log( sortResult );
-
                         wordle.reset();
-                        wordle.setWords(sortResult, 60);
+                        wordle.setWords(res.profiles, 60);
                         console.log('wordle sortType: ' + wordle.sortType);
 
                         wordle.doLayout();      
