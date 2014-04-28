@@ -1,6 +1,6 @@
 module.exports = {
 
-    surplus: 'with, para, because, us, os, le, your, do, own, no, at, on, be, our, not, from, the, it is, we all, an, by, to, you, me, he, she, they, we, how, it, if, are, to, for, of, and, in, as, am, their, also, that, my, co, http, com, is, so, de, por, un, una, el, es, or, la, mi, les, di, des, que, en, je, et, ser, soy, los, all, con, follow, las, te, lo, il, des, don, na, del, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o ,p, q, r, s, t, u, v, w, x, y, z',
+    surplus: 'with, about, re, can, para, because, us, os, le, your, do, own, no, at, on, be, our, not, from, the, it is, we all, an, by, to, you, me, he, she, they, we, how, it, if, are, to, for, of, and, in, as, am, their, also, that, my, co, http, com, is, so, de, por, un, una, el, es, or, la, mi, les, di, des, que, en, je, et, ser, soy, los, all, con, follow, las, te, lo, il, des, don, na, del, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o ,p, q, r, s, t, u, v, w, x, y, z',
  
     countWordOccurance: function (text) {
         // Remove punctuations, non-word characters...
