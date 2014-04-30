@@ -12,7 +12,8 @@
     "cookie-parser": "*",
     "express-session": "*",
     "errorhandler": "*",
-    "morgan": "*"
+    "morgan": "*",
+    "mongoose": "*"
   },
   "engines": {
     "node": ">=0.10.0"
