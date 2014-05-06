@@ -6,7 +6,7 @@ module.exports = {
         // Remove punctuations, non-word characters...
         //note: this case also remove Vietnamese unicode characters, improve later when needed
         text = text.replace(/[^A-Za-z0-9_\-\s]/g, '');
-
+    
         var words = text.split(/\s+/),
             wordsObject = {},
             i, il, w;
@@ -25,7 +25,10 @@ module.exports = {
         var result = [];
         for (var item in wordsObject) {
             if(wordsObject.hasOwnProperty(item)) {
-                result.push({ text: item, count:wordsObject[item] });
+//                result.push({ text: item, count:wordsObject[item] });
+                if( item != "" ){
+                    result.push({ key: item, value: wordsObject[item] });
+                }
             }
         }
         

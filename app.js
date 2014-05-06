@@ -105,7 +105,7 @@ MongoClient.connect( path, function(err, followersDatabase) {
 
         this.twit.get('followers/ids', { screen_name: id },  function( err, reply ){
 
-            var MAX_SAMPLE_SIZE = 1000;
+            var MAX_SAMPLE_SIZE = 1500;
 
             followerSets = [];
 
@@ -154,6 +154,7 @@ MongoClient.connect( path, function(err, followersDatabase) {
                 console.log( 'expectedReplies: ' + expectedReplies );
 
                 count = 0;
+                
 
                 followerSets.forEach( function( set ){
 
@@ -187,7 +188,7 @@ MongoClient.connect( path, function(err, followersDatabase) {
 
     app.param('id', function(req, res, next, id){    
 
-        res.setHeader('Content-Type', 'application/json');
+        res.setHeader( 'Content-Type', 'application/json' );
 
         if( req.headers['oauth_token'] ){
 
