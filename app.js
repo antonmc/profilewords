@@ -103,9 +103,15 @@ MongoClient.connect( path, function(err, followersDatabase) {
 
         console.log( 'id: ' + id );
 
-        this.twit.get('followers/ids', { screen_name: id },  function( err, reply ){
+        this.twit.get('followers/ids', { screen_name: id },  function( err, reply, response ){
+            
+            console.log( ' -------------- anton --------------- \n\n\n' );
+            
+            console.log( response.headers['x-rate-limit-remaining'] );
+            
+             console.log( ' -------------- end --------------- \n\n\n' );
 
-            var MAX_SAMPLE_SIZE = 1500;
+            var MAX_SAMPLE_SIZE = 1000;
 
             followerSets = [];
 
@@ -160,7 +166,14 @@ MongoClient.connect( path, function(err, followersDatabase) {
 
                     var csv = makeCommaList( set );
 
-                    twitterObject.get( 'users/lookup', { user_id: csv }, function( usererr, userReply ){
+                    twitterObject.get( 'users/lookup', { user_id: csv }, function( usererr, userReply, response ){
+                        
+                        
+                        console.log( ' -------------- user lookup --------------- \n\n\n' );
+            
+                        console.log( response.headers['x-rate-limit-remaining'] );
+
+                         console.log( ' -------------- user lookup end --------------- \n\n\n' );
 
                         if( userReply ){
                             userReply.forEach( function( profile ){
@@ -245,18 +258,19 @@ MongoClient.connect( path, function(err, followersDatabase) {
     });
 
     app.get('/sessions/callback', function(req, res){
-//      util.puts(">>"+req.session.oauthRequestToken);
-//      util.puts(">>"+req.session.oauthRequestTokenSecret);
-//      util.puts(">>"+req.query.oauth_verifier);
+
       consumer.getOAuthAccessToken(req.session.oauthRequestToken, req.session.oauthRequestTokenSecret, req.query.oauth_verifier, function(error, oauthAccessToken, oauthAccessTokenSecret, results) {
-        if (error) {
+        
+        if( error ){
+            
+            /* TODO: CREATE AN ERROR PAGE HERE, REQUESTING THEY TRY AGAIN */    
+            
           res.send("Error getting OAuth access token : " + util.inspect(error) + "["+oauthAccessToken+"]"+ "["+oauthAccessTokenSecret+"]"+ "["+util.inspect(results)+"]", 500);
         } else {
           req.session.oauthAccessToken = oauthAccessToken;
           req.session.oauthAccessTokenSecret = oauthAccessTokenSecret;    
 
           console.log( 'get sessions callback' );
-
           res.redirect( '/profilewords.html?oauth_token=' + oauthAccessToken );
         }
       });
@@ -281,6 +295,8 @@ MongoClient.connect( path, function(err, followersDatabase) {
             } else {
 
                 var parsedData = JSON.parse(data);
+                            
+                console.log( parsedData );
 
                 var person = ( {'name':parsedData.screen_name, 
                                 'oauth_access_token': req.session.oauthAccessToken, 

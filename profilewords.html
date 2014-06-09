@@ -4,39 +4,90 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title>Followers Profile Cloud</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <meta name="description" content="twitter profiles biography wordcloud analytics sentiment">
     <meta name="author" content="Anton McConville">
+    <link href="style/bootstrap.css" rel="stylesheet">
     <link rel="stylesheet" href="style/profilewords.css">
     <link href='http://fonts.googleapis.com/css?family=Varela' rel='stylesheet' type='text/css'>
 </head>
 <body>
-    <div class="flex-container flex-container-style fixed-height flex-header">
-        <div class="flex-item">
-            <div  class="instruction">
-                <span contenteditable=""> Follower's profiles for this Twitter ID: </span>
-            </div>
+    <div class="navbar navbar-default navbar-static-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Profile Words</a>
+            
         </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <!-- li class="active"><a href="#">Home</a></li>
+            
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="#">Action</a></li>
+                <li><a href="#">Another action</a></li>
+                <li><a href="#">Something else here</a></li>
+                <li class="divider"></li>
+                <li class="dropdown-header">Nav header</li>
+                <li><a href="#">Separated link</a></li>
+                <li><a href="#">One more separated link</a></li>
+              </ul>
+            </li -->
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+        <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+    <div class="flex-container flex-container-style fixed-height flex-header">
+        <!-- div class="flex-item">
+            <div  class="instruction">
+                <span> Follower's profiles for this Twitter ID: </span>
+            </div>
+        </div -->
         <div class="flex-item">
-            <span class="leadArea" contenteditable=""> 
+            <span class="leadArea"> 
+                
                 <div>
                     <form class="twitterIdEntry" action="javascript:renderWordle()" method="get">
-                        <span class="at">@</span><input class="idForm" type="text" id="twitterIDfield" name="user_email"/>
-                        <input class="submitButton" type="submit" value="Submit" />
+                        
+                        
+                        <div class="input-group input-group-lg" style="max-width: 360px;">
+                          <span class="input-group-addon">@</span>
+                          <input id="twitterIDfield" type="text" class="form-control" placeholder="Username">
+                        </div>
+                        
                     </form>
                 </div>
             </span>
         </div>
-    </div>
-    <div class="flex-container flex-container-style fixed-height">
         <div class="flex-item">
-            <span contenteditable="">
-                <div id='wordle-container' class='container'></div>
-            </span>
+            <div class="progressIndicator">
+                <label class="progressLabel">Queries used:</label><canvas id="canvas" width="200" height="10"></canvas><span class="glyphicon glyphicon-refresh" style="padding-left:10px;"></span><span class="glyphicon glyphicon-download" style="padding-left:10px;"></span>
+            </div>
+              
         </div>
-        <!-- div class="flex-item"><span contenteditable=""></span><span class="counter">3</span></div -->
-    </div>    
+                
+    </div>
+        <div class="flex-container flex-container-style fixed-height">
+            <div class="flex-item">
+                <span>
+                    <div id='wordle-container' class='wordcontainer'></div>
+                </span>
+            </div>
+            <!-- div class="flex-item"><span contenteditable=""></span><span class="counter">3</span></div -->
+        </div>    
     <footer>
-        <div class="flex-container flex-container-style">
+        <div class="flex-footer flex-container-style">
             <div class="flex-item">
                 <span>
                     (c) Anton McConville @antonmc 2014.
@@ -44,9 +95,12 @@
             </div>
         </div>    
     </footer>
+    <script src="//use.edgefonts.net/love-ya-like-a-sister;amatic-sc.js"></script> 
     <script src="src/d3.min.js"></script>
     <script src="src/d3.layout.cloud.js"></script>
     <script src="src/profilewords.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="src/bootstrap.js"></script>
     <script>
 	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

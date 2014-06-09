@@ -51,9 +51,41 @@ var getParameter = function() {
     };
 
 
+
+
+document.getElementById('canvas'),
+    ctx = canvas.getContext('2d');
+                             
+function drawScrollbar () {
+  var width = 200,
+    height = 10,
+    max = 100,
+    val = Math.min(Math.max(30, 0), max),
+    direction = 'horizontal';
+  
+  // Draw the background
+  ctx.fillStyle = '#000';
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillRect(0, 0, width, height);
+
+  // Draw the fill
+  ctx.fillStyle = '#777';
+  var fillVal = Math.min(Math.max(val / max, 0), 1);
+  if (direction === 'vertical') {
+    ctx.fillRect(0, 0, width, fillVal * height);
+  } else {
+    ctx.fillRect(0, 0, fillVal * width, height);
+  }
+}
+
+drawScrollbar();
+
 var fill = d3.scale.category20b();
 
 var w = 600, h = 600;
+
+//var w = 1500, h = 421;
+
 
 var words = [],
     max,
@@ -90,12 +122,15 @@ function parseProfileData( data ) {
 
 function generate() {
   layout.font('Varela').spiral('archimedean');
+//    layout.font('love-ya-like-a-sister, fantasy').spiral('archimedean');
+//    layout.font('amatic-sc, sans-serif').spiral('archimedean');
+
   fontSize = d3.scale['linear']().range([5, 75]);
   if (tags.length) fontSize.domain([+tags[tags.length - 1].value || 1, +tags[0].value]);
   complete = 0;
   statusText.style("display", null);
   words = [];
-  layout.stop().words(tags.slice(0, max = 60 )).start();
+  layout.stop().words(tags.slice(0, max = 70 )).start();
 }
 
 function progress(d) {
@@ -111,9 +146,11 @@ function customFill(d){
     var Primavera = [ '5EBFAD', 'F1F2D8', 'F2A03D', 'F2541B', 'D94423' ];    
     var Winter_Snowfall = [ '273F5A', 'C6DBF3', '4B81A5', '74A0BF', '98C4DA' ];    
     var Earth = [ 'cbc4ba', 'd4806d', 'c2be98', 'e3cb92', '695d4f' ];
-    var Earth = [ 'cbc4ba', 'd4806d', 'c2be98', 'e3cb92', '695d4f' ];
+    var Anton = [ 'C3DBCE', 'FF3300', '170746', 'D7E7E7' ];
+    var Adjustment = [ '5C8C7E', '47738c', '8A9FB0', '95AA99', '2f4d57' ];
+    
         
-    fillColor =  '#' + Earth[ Math.floor( ( Math.random()*5 ) ) ];
+    fillColor =  '#' + Earth[ Math.floor( ( Math.random()* Earth.length ) ) ];
     
     return fillColor;
 }
@@ -240,9 +277,7 @@ d3.select("#random-palette").on("click", function() {
       to,
       count,
       scale = d3.scale.linear(),
-      arc = d3.svg.arc()
-        .innerRadius(0)
-        .outerRadius(r);
+      arc = d3.svg.arc().innerRadius(0).outerRadius(r);
 
   getAngles();
 
