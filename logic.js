@@ -70,7 +70,7 @@ module.exports = {
     
     
     process: function( descriptions ){
-    
+            
         var cleanResponse = this.cleanResponse( descriptions, this.surplus );
     
         var words = this.countWordOccurance( cleanResponse );

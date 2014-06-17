@@ -107,9 +107,11 @@ MongoClient.connect( path, function(err, followersDatabase) {
             
             console.log( ' -------------- anton --------------- \n\n\n' );
             
-            console.log( response.headers['x-rate-limit-remaining'] );
+            var REQUESTS_REMAINING = response.headers['x-rate-limit-remaining'];
             
-             console.log( ' -------------- end --------------- \n\n\n' );
+            console.log( 'REQUESTS REMAINING: ' + REQUESTS_REMAINING );
+            
+            console.log( ' -------------- end --------------- \n\n\n' );
 
             var MAX_SAMPLE_SIZE = 1000;
 
@@ -169,21 +171,22 @@ MongoClient.connect( path, function(err, followersDatabase) {
                     twitterObject.get( 'users/lookup', { user_id: csv }, function( usererr, userReply, response ){
                         
                         
-                        console.log( ' -------------- user lookup --------------- \n\n\n' );
-            
-                        console.log( response.headers['x-rate-limit-remaining'] );
-
-                         console.log( ' -------------- user lookup end --------------- \n\n\n' );
+//                        console.log( ' -------------- user lookup --------------- \n\n\n' );
+//            
+//                        console.log( response.headers['x-rate-limit-remaining'] );
+//
+//                         console.log( ' -------------- user lookup end --------------- \n\n\n' );
 
                         if( userReply ){
                             userReply.forEach( function( profile ){
+                                
                                 descriptions = descriptions + ' ' + profile.description;
                                 count++;
 
                                 if( count === expectedReplies ){
 
                                     var words = logic.process( descriptions );                                
-                                    res.end( JSON.stringify({ profiles: words }));  
+                                    res.end( JSON.stringify({ outcome: 'success', profiles: words, budget: REQUESTS_REMAINING }));  
                                 }
 
                             });  
@@ -195,6 +198,7 @@ MongoClient.connect( path, function(err, followersDatabase) {
             if( err ){
                 console.log( 'retrieval error' );
                 console.log( err );
+                res.end( JSON.stringify({ outcome: 'failure', profiles: [], budget: REQUESTS_REMAINING }) );  
             }
         })
     }
@@ -265,7 +269,10 @@ MongoClient.connect( path, function(err, followersDatabase) {
             
             /* TODO: CREATE AN ERROR PAGE HERE, REQUESTING THEY TRY AGAIN */    
             
-          res.send("Error getting OAuth access token : " + util.inspect(error) + "["+oauthAccessToken+"]"+ "["+oauthAccessTokenSecret+"]"+ "["+util.inspect(results)+"]", 500);
+          /* res.send("Error getting OAuth access token : " + util.inspect(error) + "["+oauthAccessToken+"]"+ "["+oauthAccessTokenSecret+"]"+ "["+util.inspect(results)+"]", 500); */
+            
+            res.sendfile( 'index.html' );
+            
         } else {
           req.session.oauthAccessToken = oauthAccessToken;
           req.session.oauthAccessTokenSecret = oauthAccessTokenSecret;    

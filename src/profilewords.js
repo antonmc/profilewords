@@ -34,7 +34,15 @@ var getParameter = function() {
                   if (xhr.readyState === 4) {
                     if (xhr.status === 200) {
                         var res = JSON.parse( xhr.responseText );
-                        parseProfileData( res.profiles );
+                        
+                        if( res.outcome === 'success' ){
+                            parseProfileData( res.profiles );
+                            drawScrollbar( res.budget );
+                        }else{
+                            showWarning();
+                            drawScrollbar( res.budget );
+                        }
+                        
                     } else {
                       console.error(xhr.statusText);
                     }
@@ -44,7 +52,8 @@ var getParameter = function() {
                 xhr.setRequestHeader( "oauth_token", oauth_token );
             
                 xhr.onerror = function (e) {
-                  console.error(xhr.statusText);
+                    console.error(xhr.statusText);
+                    showWarning();
                 };
                 xhr.send( parameters );
         }
@@ -56,11 +65,15 @@ var getParameter = function() {
 document.getElementById('canvas'),
     ctx = canvas.getContext('2d');
                              
-function drawScrollbar () {
-  var width = 200,
+function drawScrollbar( remaining ) {
+    
+    var max = 15;
+    
+    var marker = max - remaining;
+    
+    var width = 200,
     height = 10,
-    max = 100,
-    val = Math.min(Math.max(30, 0), max),
+    val = Math.min(Math.max(marker, 0), max),
     direction = 'horizontal';
   
   // Draw the background
@@ -78,7 +91,18 @@ function drawScrollbar () {
   }
 }
 
-drawScrollbar();
+drawScrollbar(15);
+
+
+function showWarning(){
+    var warningText =   '<div class="alert alert-warning alert-dismissable">' +
+                        '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' +
+                        '<strong>Warning! </strong> There was no data for that twitter id. Is it an actual id? Please try another.</div>';  
+    
+    var warningArea = document.getElementById( 'warningArea' );
+    
+    warningArea.innerHTML = warningText;
+}
 
 var fill = d3.scale.category20b();
 
@@ -340,4 +364,5 @@ d3.select("#random-palette").on("click", function() {
 
   function cross(a, b) { return a[0] * b[1] - a[1] * b[0]; }
   function dot(a, b) { return a[0] * b[0] + a[1] * b[1]; }
+    
 })();
