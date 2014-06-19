@@ -8,6 +8,7 @@ var WARNING_INVALID_ID = 'There was no data for that twitter id. Is it an actual
 
 var latestProfileData;
 var latestRateData = 15;
+var CLOUD_TYPE = 'following';
 
 var getParameter = function() {
     var vars = {};
@@ -34,8 +35,7 @@ function renderWordle(){
 
         if( oauth_token ){                
             console.log( 'read oauth token: ' + oauth_token );
-            parameters = 'oauth_token=' + oauth_token;
-
+            parameters = 'oauth_token=' + oauth_token + 'cloudType=' + CLOUD_TYPE;
         }
 
         var xhr = new XMLHttpRequest();
@@ -64,6 +64,7 @@ function renderWordle(){
             };
 
             xhr.setRequestHeader( "oauth_token", oauth_token );
+            xhr.setRequestHeader( "cloudtype", CLOUD_TYPE );
 
             xhr.onerror = function (e) {
                 console.error(xhr.statusText);
@@ -71,6 +72,11 @@ function renderWordle(){
             };
             xhr.send( parameters );
     }
+}
+
+function setCloudType(event){
+    CLOUD_TYPE = event;
+    renderWordle();
 }
 
 
@@ -98,7 +104,7 @@ function drawScrollbar( remaining ) {
     direction = 'horizontal';
   
   // Draw the background
-  ctx.fillStyle = '#000';
+  ctx.fillStyle = '#EEE';
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.fillRect(0, 0, width, height);
 

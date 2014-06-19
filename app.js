@@ -88,7 +88,7 @@ MongoClient.connect( path, function(err, followersDatabase) {
         return csv;
     }
 
-    var retrieveProfiles = function( config, res, id ) {
+    var retrieveProfiles = function( config, res, id, cloudType ) {
 
         /* To begin with this function will retrieve the first 5000
            followers as defined by Twitter's API */
@@ -102,8 +102,27 @@ MongoClient.connect( path, function(err, followersDatabase) {
         var set = [];
 
         console.log( 'id: ' + id );
+        
+        var query = 'followers/ids';
+        
+        switch( cloudType ){
+         
+            case 'following':
+                query = 'friends/ids';
+                break;
+            
+            case 'favorites':
+                query = 'favorites/list';
+                break;
+                
+        }
+        
+        if( cloudType === 'following' ){
+            query = 'friends/ids';
+        }
+        
 
-        this.twit.get('followers/ids', { screen_name: id },  function( err, reply, response ){
+        this.twit.get(query, { screen_name: id },  function( err, reply, response ){
             
             console.log( ' -------------- anton --------------- \n\n\n' );
             
@@ -210,6 +229,9 @@ MongoClient.connect( path, function(err, followersDatabase) {
         if( req.headers['oauth_token'] ){
 
             var token = req.headers['oauth_token'];
+            var cloudType = req.headers['cloudtype'];
+            
+            console.log( 'CLOUD TYPE: ' + cloudType );
 
             var collection = followersDatabase.collection( 'tokens' );
 
@@ -224,7 +246,7 @@ MongoClient.connect( path, function(err, followersDatabase) {
 
                 console.log( 'account: ' + item.name );
 
-                retrieveProfiles( config, res, id );   
+                retrieveProfiles( config, res, id, cloudType );   
 
                 var requests = followersDatabase.collection( 'requests' );
 
@@ -271,7 +293,7 @@ MongoClient.connect( path, function(err, followersDatabase) {
             
           /* res.send("Error getting OAuth access token : " + util.inspect(error) + "["+oauthAccessToken+"]"+ "["+oauthAccessTokenSecret+"]"+ "["+util.inspect(results)+"]", 500); */
             
-            res.sendfile( 'index.html' );
+            res.redirect( 'index.html' );
             
         } else {
           req.session.oauthAccessToken = oauthAccessToken;
@@ -303,8 +325,6 @@ MongoClient.connect( path, function(err, followersDatabase) {
 
                 var parsedData = JSON.parse(data);
                             
-                console.log( parsedData );
-
                 var person = ( {'name':parsedData.screen_name, 
                                 'oauth_access_token': req.session.oauthAccessToken, 
                                 'oauth_access_token_secret': req.session.oauthAccessTokenSecret } );

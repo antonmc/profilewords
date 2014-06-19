@@ -66,6 +66,33 @@
                 </div>
             </span>
         </div>
+        <div class="flex-item" style="padding-top: 20px;">
+            <!-- div class="btn-toolbar" role="toolbar" style="margin: 0;">
+              <div class="btn-group btn-group-xs">
+                <button type="button" class="btn btn-default">Followers</button>
+                <button type="button" class="btn btn-default">Following</button>
+                <button type="button" class="btn btn-default">Favorites</button>
+                <button type="button" class="btn btn-default">Tweets</button>
+              </div>
+            </div -->
+            
+            <div class="btn-group btn-group-xs" data-toggle="buttons">
+              <label id="followers" class="btn btn-warning active" onclick="setCloudType('followers')">
+                <input type="radio" name="options" id="option1" > Followers
+              </label>
+              <label id="following" class="btn btn-warning" onclick="setCloudType('following')">
+                <input type="radio" name="options" id="option2"> Following
+              </label>
+              <label id="favorites" class="btn btn-warning" onclick="setCloudType('favorites')">
+                <input type="radio" name="options" id="option3"> Favorites
+              </label>
+              <label id="tweets" class="btn btn-warning" onclick="setCloudType('tweets')">
+                <input type="radio" name="options" id="option3"> Tweets
+              </label>
+            </div>
+            
+        </div>
+
         <div class="flex-item">
             <div class="progressIndicator">
                 <label class="progressLabel">Queries used:</label>
@@ -74,6 +101,7 @@
                 <span class="glyphicon glyphicon-download" style="padding-left:10px;"></span>
             </div>
         </div>
+        
         <div id="warningArea">
         </div>
     </div>
