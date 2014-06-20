@@ -115,11 +115,15 @@ MongoClient.connect( path, function(err, followersDatabase) {
                 query = 'favorites/list';
                 break;
                 
+            case 'tweets':
+                query = 'statuses/user_timeline';
+                break;
+            
+            default:
+                query = 'followers/ids';
+                break;
         }
         
-        if( cloudType === 'following' ){
-            query = 'friends/ids';
-        }
         
 
         this.twit.get(query, { screen_name: id },  function( err, reply, response ){
@@ -145,73 +149,88 @@ MongoClient.connect( path, function(err, followersDatabase) {
             var sampleSize;
 
             if( reply ){
+                
+                if( query === 'favorites/list' || query === 'statuses/user_timeline' ){
+                    
+                    console.log( 'favorites or tweets ... \n' );
+                    
+                    var tweetText = '';
 
-                set = [];
-
-                if( reply.ids.length > MAX_SAMPLE_SIZE ){
-                    sampleSize = MAX_SAMPLE_SIZE;
-                }else{
-                    sampleSize = reply.ids.length;
+                    
+                    reply.forEach( function( element ){
+                        tweetText = tweetText + element.text;                        
+                    });
+                    
+                    var words = logic.process( tweetText );                                
+                    res.end( JSON.stringify({ outcome: 'success', profiles: words, budget: REQUESTS_REMAINING })); 
+                    
+                    
+//                    console.log( reply );
                 }
-
-                reply.ids.forEach( function( id ){
-
-                    if( totalCount < sampleSize ){
-
-                        if( count < 100 ){
-                            set.push( id );
-                        }else{
-                            count = 0;
-                            followerSets.push( set );
-                            set = [];
-                            set.push( id );
-                        }
-
-                        count++;
-                        totalCount++;
-                    }
-                })
-
-                followerSets.push( set );
-
-                var descriptions = '';
-
-                var expectedReplies = ( followerSets.length - 1 ) * 100 + count;
-
-                console.log( 'expectedReplies: ' + expectedReplies );
-
-                count = 0;
                 
 
-                followerSets.forEach( function( set ){
+                if( query === 'followers/ids' || query === 'friends/ids' ){
+                
+                    set = [];
 
-                    var csv = makeCommaList( set );
+                    if( reply.ids.length > MAX_SAMPLE_SIZE ){
+                        sampleSize = MAX_SAMPLE_SIZE;
+                    }else{
+                        sampleSize = reply.ids.length;
+                    }
 
-                    twitterObject.get( 'users/lookup', { user_id: csv }, function( usererr, userReply, response ){
-                        
-                        
-//                        console.log( ' -------------- user lookup --------------- \n\n\n' );
-//            
-//                        console.log( response.headers['x-rate-limit-remaining'] );
-//
-//                         console.log( ' -------------- user lookup end --------------- \n\n\n' );
+                    reply.ids.forEach( function( id ){
 
-                        if( userReply ){
-                            userReply.forEach( function( profile ){
-                                
-                                descriptions = descriptions + ' ' + profile.description;
-                                count++;
+                        if( totalCount < sampleSize ){
 
-                                if( count === expectedReplies ){
+                            if( count < 100 ){
+                                set.push( id );
+                            }else{
+                                count = 0;
+                                followerSets.push( set );
+                                set = [];
+                                set.push( id );
+                            }
 
-                                    var words = logic.process( descriptions );                                
-                                    res.end( JSON.stringify({ outcome: 'success', profiles: words, budget: REQUESTS_REMAINING }));  
-                                }
-
-                            });  
+                            count++;
+                            totalCount++;
                         }
                     })
-                })
+
+                    followerSets.push( set );
+
+                    var descriptions = '';
+
+                    var expectedReplies = ( followerSets.length - 1 ) * 100 + count;
+
+                    console.log( 'expectedReplies: ' + expectedReplies );
+
+                    count = 0;
+
+
+                    followerSets.forEach( function( set ){
+
+                        var csv = makeCommaList( set );
+
+                        twitterObject.get( 'users/lookup', { user_id: csv }, function( usererr, userReply, response ){
+
+                            if( userReply ){
+                                userReply.forEach( function( profile ){
+
+                                    descriptions = descriptions + ' ' + profile.description;
+                                    count++;
+
+                                    if( count === expectedReplies ){
+
+                                        var words = logic.process( descriptions );                                
+                                        res.end( JSON.stringify({ outcome: 'success', profiles: words, budget: REQUESTS_REMAINING }));  
+                                    }
+
+                                });  
+                            }
+                        })
+                    })
+                }
             }
 
             if( err ){
@@ -291,9 +310,9 @@ MongoClient.connect( path, function(err, followersDatabase) {
             
             /* TODO: CREATE AN ERROR PAGE HERE, REQUESTING THEY TRY AGAIN */    
             
-          /* res.send("Error getting OAuth access token : " + util.inspect(error) + "["+oauthAccessToken+"]"+ "["+oauthAccessTokenSecret+"]"+ "["+util.inspect(results)+"]", 500); */
+          res.send("Error getting OAuth access token : " + util.inspect(error) + "["+oauthAccessToken+"]"+ "["+oauthAccessTokenSecret+"]"+ "["+util.inspect(results)+"]", 500); 
             
-            res.redirect( 'index.html' );
+//            res.redirect( 'index.html' );
             
         } else {
           req.session.oauthAccessToken = oauthAccessToken;
