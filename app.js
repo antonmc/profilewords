@@ -100,8 +100,6 @@ MongoClient.connect( path, function(err, followersDatabase) {
         var followerSets = [];
 
         var set = [];
-
-        console.log( 'id: ' + id );
         
         var query = 'followers/ids';
         
@@ -127,14 +125,8 @@ MongoClient.connect( path, function(err, followersDatabase) {
         
 
         this.twit.get(query, { screen_name: id },  function( err, reply, response ){
-            
-            console.log( ' -------------- anton --------------- \n\n\n' );
-            
+                        
             var REQUESTS_REMAINING = response.headers['x-rate-limit-remaining'];
-            
-            console.log( 'REQUESTS REMAINING: ' + REQUESTS_REMAINING );
-            
-            console.log( ' -------------- end --------------- \n\n\n' );
 
             var MAX_SAMPLE_SIZE = 1000;
 
@@ -151,9 +143,7 @@ MongoClient.connect( path, function(err, followersDatabase) {
             if( reply ){
                 
                 if( query === 'favorites/list' || query === 'statuses/user_timeline' ){
-                    
-                    console.log( 'favorites or tweets ... \n' );
-                    
+                                        
                     var tweetText = '';
 
                     
@@ -163,9 +153,6 @@ MongoClient.connect( path, function(err, followersDatabase) {
                     
                     var words = logic.process( tweetText );                                
                     res.end( JSON.stringify({ outcome: 'success', profiles: words, budget: REQUESTS_REMAINING })); 
-                    
-                    
-//                    console.log( reply );
                 }
                 
 
@@ -202,8 +189,6 @@ MongoClient.connect( path, function(err, followersDatabase) {
                     var descriptions = '';
 
                     var expectedReplies = ( followerSets.length - 1 ) * 100 + count;
-
-                    console.log( 'expectedReplies: ' + expectedReplies );
 
                     count = 0;
 
@@ -250,8 +235,6 @@ MongoClient.connect( path, function(err, followersDatabase) {
             var token = req.headers['oauth_token'];
             var cloudType = req.headers['cloudtype'];
             
-            console.log( 'CLOUD TYPE: ' + cloudType );
-
             var collection = followersDatabase.collection( 'tokens' );
 
             collection.findOne( { 'oauth_access_token': token }, function( err, item ) {                 
@@ -272,8 +255,6 @@ MongoClient.connect( path, function(err, followersDatabase) {
                 var date = new Date();
 
                 var request = ( { 'twitterId':id, 'timeStamp': date, 'account': item.name } );
-
-                console.log( request );
 
                 requests.insert( request, {safe:true}, errorHandler );
 
@@ -302,7 +283,7 @@ MongoClient.connect( path, function(err, followersDatabase) {
       });
     });
 
-    app.get('/sessions/callback', function(req, res){
+   app.get('/sessions/callback', function(req, res){
 
       consumer.getOAuthAccessToken(req.session.oauthRequestToken, req.session.oauthRequestTokenSecret, req.query.oauth_verifier, function(error, oauthAccessToken, oauthAccessTokenSecret, results) {
         

@@ -3,7 +3,7 @@
 /* Definitions and globals */
 
 var WARNING_REFRESH = 'Not so fast - nothing to refresh yet - submit a query first!';
-var WARNING_RATE_LIMIT = 'You have reached your rate limit for this 15 minute window';
+var WARNING_RATE_LIMIT = 'You have reached your rate limit. Try again in 15 minutes ...';
 var WARNING_INVALID_ID = 'There was no data for that twitter id. Is it an actual id? Please try another';
 
 var latestProfileData;
@@ -53,7 +53,12 @@ function renderWordle(){
                         parseProfileData( latestProfileData );
                         drawScrollbar( res.budget );
                     }else{
-                        showWarning( WARNING_INVALID_ID );
+                        
+                        if( res.budget === "0" ){
+                            showError( WARNING_RATE_LIMIT );
+                        }else{
+                            showWarning( WARNING_INVALID_ID );
+                        }
                         drawScrollbar( res.budget );
                     }
 
@@ -68,7 +73,7 @@ function renderWordle(){
 
             xhr.onerror = function (e) {
                 console.error(xhr.statusText);
-                showWarning( WARNING_INVALID_ID );
+                showError( WARNING_RATE_LIMIT );
             };
             xhr.send( parameters );
     }
@@ -119,6 +124,62 @@ function drawScrollbar( remaining ) {
 }
 
 drawScrollbar(15);
+
+function drawTheme(){
+    var c = document.getElementById("themeArea");
+    var ctx = c.getContext("2d");
+//    ctx.fillStyle = "#FF0000";
+//    ctx.fillRect(0,0,150,75);   
+    
+    var Earth = [ '#cbc4ba', '#d4806d', '#c2be98', '#e3cb92', '#695d4f' ];
+    
+    ctx.strokeStyle = '#DDDDDD';
+    
+    ctx.beginPath();
+    ctx.arc(13,13,5,0,2*Math.PI);
+    ctx.fillStyle = Earth[0];
+    ctx.fill();
+//    ctx.stroke();
+    
+    ctx.beginPath();
+    ctx.arc(33,13,5,0,2*Math.PI);
+    ctx.fillStyle = Earth[1];
+    ctx.fill();
+//    ctx.stroke();
+    
+    ctx.beginPath();
+    ctx.arc(53,13,5,0,2*Math.PI);
+    ctx.fillStyle = Earth[2];
+    ctx.fill();
+//    ctx.stroke();
+    
+    ctx.beginPath();
+    ctx.arc(73,13,5,0,2*Math.PI);
+    ctx.fillStyle = Earth[3];
+    ctx.fill();
+//    ctx.stroke();
+    
+    ctx.beginPath();
+    ctx.arc(93,13,5,0,2*Math.PI);
+    ctx.fillStyle = Earth[4];
+    ctx.fill();
+//    ctx.stroke();
+
+    
+}
+
+drawTheme();
+
+
+function showError( warning ){
+    var warningText =   '<div class="alert alert-danger alert-dismissable">' +
+                            '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' +
+                            '<strong>Stop! </strong>' + warning + '</div>';  
+
+    var warningArea = document.getElementById( 'warningArea' );
+
+    warningArea.innerHTML = warningText;
+}
 
 
 function showWarning( warning ){
@@ -203,7 +264,11 @@ function customFill(d){
     var Anton = [ '#C3DBCE', '#FF3300', '#170746', '#D7E7E7' ];
     var Adjustment = [ '#5C8C7E', '#47738c', '#8A9FB0', '#95AA99', '#2f4d57' ];
     var Lifeguard = [ '#b6c6c6 ', '#ec6c52', '#f2b26f', '#ABC5CB', '#93ADB6', '#7cb2c4' ];
+    var Flight = { background:'#FCFBF8', words:[ '#EACDAD', '#ABC2BD', '#DDA26E', '#9C8E77' ], font:'Varela' };
     var Drop = [ 'ed7157' ]
+    
+    
+    
         
     fillColor =  randomColor( Earth );
     
@@ -267,12 +332,23 @@ function downloadPNG() {
     c.translate(word.x, word.y);
     c.rotate(word.rotate * Math.PI / 180);
     c.textAlign = "center";
-    c.fillStyle = fill(word.text.toLowerCase());
+    c.fillStyle = customFill(); // fill(word.text.toLowerCase());
     c.font = word.size + "px " + word.font;
     c.fillText(word.text, 0, 0);
     c.restore();
   });
-  d3.select(this).attr("href", canvas.toDataURL("image/png"));
+
+//  var dataUrl = canvas.toDataURL("image/png");
+    
+//                document.getElementById("theimage").src = canvas.toDataURL();
+
+    
+    var image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");  // here is the most important part because if you dont replace you will get a DOM 18 exception.
+
+
+window.location.href=image; // it will save locally
+    
+//  d3.select(this).attr("href", canvas.toDataURL("image/png"));
 }
 
 function downloadSVG() {

@@ -96,3 +96,10 @@ footer {
     padding:20px;
     font-family: sans-serif; 
 }
+
+.form-control:focus {
+    border-color: #66afe9;
+    outline: 0;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
