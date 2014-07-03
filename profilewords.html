@@ -58,7 +58,7 @@
             <span class="leadArea"> 
                 <div>
                     <form class="twitterIdEntry" action="javascript:renderWordle()" method="get"> 
-                        <div class="input-group input-group-lg" style="max-width: 300px;">
+                        <div class="input-group input-group-lg" style="max-width: 290px;">
                           <span class="input-group-addon">@</span>
                           <input id="twitterIDfield" type="text" class="form-control" placeholder="Username">
                         </div>
@@ -94,16 +94,16 @@
         </div>
         <div class="flex-item">
             <div>
-                <span class="glyphicon glyphicon-chevron-left" onclick="downloadPNG();" style="font-size:12pt;padding-right:5px;top:-5px;color:#ddd;"></span>
+                <span class="glyphicon glyphicon-chevron-left" onclick="lastStyle();" style="font-size:12pt;padding-right:5px;top:-6px;color:#ddd;"></span>
                 <canvas id="themeArea" width="106" height="26" class="themeArea"></canvas>
-                <span class="glyphicon glyphicon-chevron-right" onclick="downloadPNG();" style="font-size:12pt;padding-left:5px;top:-5px;color:#ddd;"></span>
+                <span class="glyphicon glyphicon-chevron-right" onclick="nextStyle();" style="font-size:12pt;padding-left:5px;top:-6px;color:#ddd;"></span>
             </div>
         </div>
 
         <div class="flex-item">
             <div class="progressIndicator">
                 <label class="progressLabel">Queries used:</label>
-                <canvas id="canvas" width="160" height="10"></canvas>
+                <canvas id="canvas" width="120" height="10"></canvas>
                 <span title="redraw cloud" id="refresh" onclick="refresh();" class="glyphicon glyphicon-refresh" style="font-size:12pt;padding-left:10px;"></span>
                 <span class="glyphicon glyphicon-download" onclick="downloadPNG();" style="font-size:12pt;padding-left:10px;"></span>
             </div>

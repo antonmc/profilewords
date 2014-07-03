@@ -107,7 +107,7 @@ footer {
 
 .progressLabel{
     font-family: "Varela";
-    font-size: 10pt;
+    font-size: 9pt;
     padding: 10px;
     padding-left: 0;
 }
@@ -322,7 +322,7 @@ footer {
 }
 
 .themeArea{
-    border:1px solid #EEEEEE;
+    border:1px solid #f9f5ef;
     border-radius:5px;
     margin: 20px;
     margin-left: 0;
@@ -333,7 +333,7 @@ footer {
 
 .input-group .form-control {
     display: table-cell;
-    border-color: #eee;
+    border-color: #f9f5ef;
 }
 
 .input-group-addon, .input-group-btn {
@@ -362,9 +362,52 @@ footer {
 }
 
 .navbar-default .navbar-brand {
-    color: #aaa;
+    color: #ed9c28 ;
 }
 
 .navbar-default .navbar-nav>li>a {
-    color: #aaa;
+    color: #ed9c28 ;
+}
+
+.btn-xs, .btn-group-xs>.btn {
+    padding: 4px 10px;
+    font-size: 12px;
+    line-height: 1.5;
+    border-radius: 3px;
+}
+
+.btn-warning {
+    color: #999;
+    background-color: #f9f5ef;
+    border: white 2px solid;
+}
+
+.btn-warning:hover, .btn-warning:focus, .btn-warning:active, .btn-warning.active, .open .dropdown-toggle.btn-warning {
+    color: #fff;
+    background-color: #f0af53;  /* #ed9c28; */
+    border: white 2px solid;
+}
+
+.btn:active, .btn.active {
+    outline: 0;
+    background-image: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+.input-group-addon {
+    padding: 6px 12px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1;
+    color: #888;
+    text-align: center;
+    background-color: #f9f5ef;
+    border: 1px solid #f9f5ef;
+    border-radius: 4px;
+}
+
+.navbar-default {
+    background-color: #f9f5ef;
+    border-color: #e7e7e7;
 }

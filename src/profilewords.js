@@ -10,6 +10,24 @@ var latestProfileData;
 var latestRateData = 15;
 var CLOUD_TYPE = 'following';
 
+var themes = [];
+var selectedTheme = 0;
+
+function initialiseThemes(){
+    
+    themes.push( { name: 'Earth', background:'#FCFBF8', words:[ '#cbc4ba', '#d4806d', '#c2be98', '#e3cb92', '#695d4f' ], font:'Varela' } );
+    themes.push( { name: 'MaddeningCaravan', background:'#FCFBF8', words:[ '#FAD089', '#FF9C5B', '#F5634A', '#ED303C', '#3B8183' ], font:'Varela' } );    
+    themes.push( { name: 'Kuler', background:'#FCFBF8', words:[ 'FF530D', 'E82C0C', 'FF0000', 'E80C7A', 'FF0DFF' ], font:'Varela' } );    
+    themes.push( { name: 'HighRoller', background:'#FCFBF8', words:[ '#FF534E', '#FFD7AC', '#BED194', '#499989', '#176785' ], font:'Varela' } );
+    themes.push( { name: 'Primavera', background:'#FCFBF8', words:[ '#5EBFAD', '#F1F2D8', '#F2A03D', '#F2541B', '#D94423' ], font:'Varela' } );    
+    themes.push( { name: 'WinterSnowfall', background:'#FCFBF8', words:[ '#273F5A', '#C6DBF3', '#4B81A5', '#74A0BF', '#98C4DA' ], font:'Varela' } );        
+    themes.push( { name: 'AdjustmentBureau', background:'#FCFBF8', words:[ '#5C8C7E', '#47738c', '#8A9FB0', '#95AA99', '#2f4d57' ], font:'Varela' } );
+    themes.push( { name: 'Lifeguard',  background:'#FCFBF8', words:[ '#b6c6c6 ', '#ec6c52', '#f2b26f', '#ABC5CB', '#93ADB6' ], font:'Varela' } );
+    themes.push( { name: 'Flight',  background:'#FCFBF8', words:[ '#EACDAD', '#ABC2BD', '#DDA26E', '#9C8E77', '#CBC4BA' ], font:'Varela' } );
+}
+
+initialiseThemes();
+
 var getParameter = function() {
     var vars = {};
     var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi,    
@@ -103,13 +121,13 @@ function drawScrollbar( remaining ) {
     
     var marker = max - remaining;
     
-    var width = 200,
+    var width = 120,
     height = 10,
     val = Math.min(Math.max(marker, 0), max),
     direction = 'horizontal';
   
   // Draw the background
-  ctx.fillStyle = '#EEE';
+  ctx.fillStyle = '#f9f5ef';
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.fillRect(0, 0, width, height);
 
@@ -125,50 +143,62 @@ function drawScrollbar( remaining ) {
 
 drawScrollbar(15);
 
-function drawTheme(){
+function swatch( color, x ){
     var c = document.getElementById("themeArea");
     var ctx = c.getContext("2d");
-//    ctx.fillStyle = "#FF0000";
-//    ctx.fillRect(0,0,150,75);   
-    
-    var Earth = [ '#cbc4ba', '#d4806d', '#c2be98', '#e3cb92', '#695d4f' ];
-    
-    ctx.strokeStyle = '#DDDDDD';
-    
     ctx.beginPath();
-    ctx.arc(13,13,5,0,2*Math.PI);
-    ctx.fillStyle = Earth[0];
+    ctx.arc(x,13,5,0,2*Math.PI);
+    ctx.fillStyle = color;
     ctx.fill();
-//    ctx.stroke();
-    
-    ctx.beginPath();
-    ctx.arc(33,13,5,0,2*Math.PI);
-    ctx.fillStyle = Earth[1];
-    ctx.fill();
-//    ctx.stroke();
-    
-    ctx.beginPath();
-    ctx.arc(53,13,5,0,2*Math.PI);
-    ctx.fillStyle = Earth[2];
-    ctx.fill();
-//    ctx.stroke();
-    
-    ctx.beginPath();
-    ctx.arc(73,13,5,0,2*Math.PI);
-    ctx.fillStyle = Earth[3];
-    ctx.fill();
-//    ctx.stroke();
-    
-    ctx.beginPath();
-    ctx.arc(93,13,5,0,2*Math.PI);
-    ctx.fillStyle = Earth[4];
-    ctx.fill();
-//    ctx.stroke();
+}
 
+function drawTheme(){
     
+    var c = document.getElementById("themeArea");
+    var ctx = c.getContext("2d");
+    
+    ctx.clearRect(0, 0, c.width, c.height);
+            
+    for( var s = 0 ; s < themes[selectedTheme].words.length; s++ ){
+        var x = 13 + ( s * 20 );
+        swatch( themes[selectedTheme].words[s], x );        
+    }
 }
 
 drawTheme();
+
+function nextStyle(){
+    
+    var themeCount = themes.length-1;
+    
+    if( selectedTheme < themeCount ){
+        selectedTheme = selectedTheme + 1;
+    }else{
+        selectedTheme = 0;
+    }
+    
+    drawTheme();
+    
+    if( latestProfileData ){
+        parseProfileData( latestProfileData );   
+    }
+}
+
+function lastStyle(){
+      var themeCount = themes.length-1;
+    
+    if( selectedTheme > 0 ){
+        selectedTheme = selectedTheme - 1;
+    }else{
+        selectedTheme = themeCount;
+    }
+    
+    drawTheme();
+    
+    if( latestProfileData ){
+        parseProfileData( latestProfileData );   
+    }
+}
 
 
 function showError( warning ){
@@ -254,23 +284,8 @@ function randomColor( scheme ){
 }
 
 function customFill(d){    
-    
-    var Maddening_Caravan = [ '#FAD089', '#FF9C5B', '#F5634A', '#ED303C', '#3B8183' ];    
-    var Kuler = [ 'FF530D', 'E82C0C', 'FF0000', 'E80C7A', 'FF0DFF' ];    
-    var High_Rollers = [ '#FF534E', '#FFD7AC', '#BED194', '#499989', '#176785' ];
-    var Primavera = [ '#5EBFAD', '#F1F2D8', '#F2A03D', '#F2541B', '#D94423' ];    
-    var Winter_Snowfall = [ '#273F5A', '#C6DBF3', '#4B81A5', '#74A0BF', '#98C4DA' ];    
-    var Earth = [ '#cbc4ba', '#d4806d', '#c2be98', '#e3cb92', '#695d4f' ];
-    var Anton = [ '#C3DBCE', '#FF3300', '#170746', '#D7E7E7' ];
-    var Adjustment = [ '#5C8C7E', '#47738c', '#8A9FB0', '#95AA99', '#2f4d57' ];
-    var Lifeguard = [ '#b6c6c6 ', '#ec6c52', '#f2b26f', '#ABC5CB', '#93ADB6', '#7cb2c4' ];
-    var Flight = { background:'#FCFBF8', words:[ '#EACDAD', '#ABC2BD', '#DDA26E', '#9C8E77' ], font:'Varela' };
-    var Drop = [ 'ed7157' ]
-    
-    
-    
         
-    fillColor =  randomColor( Earth );
+    fillColor =  randomColor( themes[selectedTheme].words );
     
     return fillColor;
 }
